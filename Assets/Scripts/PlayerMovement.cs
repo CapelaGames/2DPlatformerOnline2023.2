@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
 
     public float timeOfLastGrounded = 0f;
 
+    [SerializeField] 
+    private ParticleSystem _dustParticle;
+
     private Rigidbody2D _rigidbody;
     private Animator _animator;
     private SpriteRenderer _sprite;
@@ -49,6 +52,23 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _isJumpPressed = true;
+        }
+        
+        DustParticleController();
+    }
+
+    private void DustParticleController()
+    {
+        if (_isGrounded || Time.time - timeOfLastGrounded < 0.2f)
+        {
+            if (!_dustParticle.isPlaying)
+            {
+                _dustParticle.Play();
+            }
+        }
+        else
+        {
+            _dustParticle.Stop();
         }
     }
 

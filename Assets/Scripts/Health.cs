@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Health : MonoBehaviour
 {
@@ -14,7 +15,8 @@ public class Health : MonoBehaviour
 
     private SpriteRenderer _sprite;
     private PlayerManager _playerManager;
-    
+    [FormerlySerializedAs("_hitParticle")] [SerializeField]
+    private ParticleSystem _hitParticlePrefab;
     
     void Start()
     {
@@ -30,6 +32,16 @@ public class Health : MonoBehaviour
             _playerManager.ReloadScene();
         }
         Destroy(gameObject);
+    }
+
+    void PlayHitParticle()
+    {
+        if (_hitParticlePrefab != null)
+        {
+            Vector3 spawnPosition = transform.position;
+            spawnPosition.z = -5;
+            Instantiate(_hitParticlePrefab,spawnPosition,Quaternion.identity);
+        }
     }
 
     IEnumerator FlashRed()
@@ -54,6 +66,7 @@ public class Health : MonoBehaviour
     public void Damage(int damage)
     {
         StartCoroutine(FlashRed());
+        PlayHitParticle();
         _health -= damage;
 
         if (_health <= 0)
